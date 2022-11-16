@@ -1,13 +1,15 @@
-<h1 style="text-align: center">{{title}}</h1>
-<p style="text-align: center">Welcome to {{title}} by Minh Quân</p>
+<div class="col-sm-12">
+    <h1 style="text-align: center">{{title}}</h1>
+    <p style="text-align: center">Welcome to {{title}} by Minh Quân</p>
 
-<form method="post" style="text-align: center">
-    {{#if msg}}
-        <p class="text-danger">{{{msg}}}</p>
-    {{/if}}
-    <div class="input-group mb-3">
-        <input type="text" name="url" class="form-control" placeholder="Link channel">
-    </div>
-    <br />
-    <button type="submit" class="btn btn-success">Get ID</button>
-</form>
+    <form method="post" style="text-align: center">
+        {{#if msg}}
+            <p class="text-danger">{{{msg}}}</p>
+        {{/if}}
+        <div class="input-group mb-3">
+            <input type="text" name="url" class="form-control" placeholder="Link channel">
+        </div>
+        <br />
+        <button type="submit" class="btn btn-success">Get ID</button>
+    </form>
+</div>
