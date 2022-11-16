@@ -2,7 +2,7 @@
     <h2>GET ID CHANNEL</h2>
     <br/>
     <div class="input-group mb-3">
-        <input type="text" value="{{id}}" id="myInput" class="form-control" placeholder="Link channel">
+        <input type="text" value="{{id}}" id="myInput" class="form-control">
     </div>
     <button onclick="myFunction()" class="btn btn-success">Copy ID</button>
     <script>
@@ -16,20 +16,6 @@
 
             // Copy the text inside the text field
             navigator.clipboard.writeText(copyText.value);
-
-            // Alert the copied text
-            alert("Copied the text: " + copyText.value);
-        }
-    </script>
-    <script>
-        const toastTrigger = document.getElementById('liveToastBtn')
-        const toastLiveExample = document.getElementById('liveToast')
-        if (toastTrigger) {
-            toastTrigger.addEventListener('click', () => {
-                const toast = new bootstrap.Toast(toastLiveExample)
-
-                toast.show()
-            })
         }
     </script>
 </div>
