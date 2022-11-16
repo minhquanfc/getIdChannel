@@ -1,10 +1,15 @@
 <div style="text-align: center">
     <h2>GET ID CHANNEL</h2>
     <br/>
+    <div class="alert alert-success" role="alert">
+        Lấy id channel thành công.
+        <a href="https://www.youtube.com/channel/{{id}}">Link channel</a>
+    </div>
     <div class="input-group mb-3">
-        <input type="text" value="{{id}}" id="myInput" class="form-control">
+        <input type="text" value="{{id}}" id="myInput" class="form-control" placeholder="Link channel">
     </div>
     <button onclick="myFunction()" class="btn btn-success">Copy ID</button>
+    <a href="/" class="btn btn-primary">Home</a>
     <script>
         function myFunction() {
             // Get the text field

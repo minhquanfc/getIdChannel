@@ -1,7 +1,10 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+<h1 style="text-align: center">{{title}}</h1>
+<p style="text-align: center">Welcome to {{title}} by Minh Quân</p>
 
-<form method="post">
+<form method="post" style="text-align: center">
+    {{#if msg}}
+        <p class="text-danger">{{{msg}}}</p>
+    {{/if}}
     <div class="input-group mb-3">
         <input type="text" name="url" class="form-control" placeholder="Link channel">
     </div>

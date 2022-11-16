@@ -8,6 +8,10 @@ exports.getForm = (req, res, next) => {
 }
 exports.postGetID = (req, res, next) => {
     const url = req.body.url;
+    if (url==""){
+        res.render('index',{msg:'Vui lòng nhập link kênh',title:"GET ID CHANNEL YOUTUBE"})
+        return;
+    }
     console.log(url)
     channelId(url)
         .then((id) => {
@@ -16,6 +20,6 @@ exports.postGetID = (req, res, next) => {
             console.log({id:id})
         })
         .catch((err) => {
-            res.send("Không lấy được id channel");
+            res.render('index',{msg:'Lỗi không lấy được id channel, vui lòng kiểm tra lại link',title:"GET ID CHANNEL YOUTUBE"})
         });
 }
