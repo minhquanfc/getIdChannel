@@ -9,8 +9,7 @@ router.post('/', getIdC.postGetID);
 router.get('/id_channel', getIdC.getForm);
 router.get('/download', getDownload.getFormDownload);
 router.post('/download', getDownload.postDownLoadDouyin);
-router.get('/download_douyin', getDownload.getFormDownLoads);
-router.post('/download_douyin', getDownload.downLoad);
+router.get('/download_douyin', getDownload.getFormDownLoads);;
 
 
 
