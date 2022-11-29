@@ -1,7 +1,10 @@
 const {channelId} = require("@gonetone/get-youtube-id-by-url");
 const ytch = require('yt-channel-info');
-
-
+const https = require("https");
+let path = require("path");
+const url = require('url');
+var request = require('request');
+var ok;
 exports.getFormGetID = (req, res, next) => {
     res.render('index', {title: 'GET ID CHANNEL YOUTUBE'})
 }
@@ -61,5 +64,4 @@ exports.postGetChannel2 = (req, res, next) => {
         console.log(err)
         res.send("Loi")
     })
-
 }
