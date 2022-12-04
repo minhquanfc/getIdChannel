@@ -6,7 +6,7 @@ const ggSheet = require('../controllers/ggsheet.controller');
 
 /* GET home page. */
 router.get('/', getIdC.getFormGetID);
-router.post('/', getIdC.postGetChannel2);
+router.post('/', getIdC.postGetID);
 router.get('/id_channel', getIdC.getForm);
 router.get('/download', getDownload.getFormDownload);
 router.post('/download', getDownload.postDownLoadDouyin);
