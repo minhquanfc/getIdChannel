@@ -18,7 +18,6 @@ exports.postDownLoadDouyin = (req, res, next) => {
         res.render('index2', {msg: 'Vui lòng nhập link video', title: 'Video Douyin Download'})
         return;
     }
-    const URL = require('url').URL
 
     https.get(link, (resp) => {
         let data = '';

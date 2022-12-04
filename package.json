@@ -13,6 +13,7 @@
     "douyinvideodownload": "^1.0.1",
     "download": "^8.0.0",
     "express": "~4.16.1",
+    "google-spreadsheet": "^3.3.0",
     "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
