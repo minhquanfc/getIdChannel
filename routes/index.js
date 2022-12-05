@@ -10,14 +10,12 @@ router.post('/', getIdC.postGetID);
 router.get('/id_channel', getIdC.getForm);
 router.get('/download', getDownload.getFormDownload);
 router.post('/download', getDownload.postDownLoadDouyin);
-router.get('/download_douyin', getDownload.getFormDownLoads);;
+router.get('/download_douyin', getDownload.getFormDownLoads);
 router.get('/test', ggSheet.getData);
+router.get('/get_id_mass', getIdC.getFormMassId);
+router.post('/get_id_mass', getIdC.postGetChannel2);
 router.get('/get_id', getIdC.getFormData);
 router.post('/get_id', getIdC.clearData);
-
-
-
-
 
 
 module.exports = router;

@@ -21,6 +21,9 @@ exports.getFormData = (req, res, next) => {
         res.render('getData', {data: data})
     })
 }
+exports.getFormMassId = (req, res, next) => {
+    res.render('index3', {title: 'GET ID CHANNEL YOUTUBE'})
+}
 exports.postGetID = async (req, res, next) => {
     const url = req.body.url;
     if (url == "") {
@@ -56,93 +59,86 @@ exports.postGetID = async (req, res, next) => {
             })
         });
 }
-exports.postGetChannel2 =async (req, res, next) => {
-    // console.log(req.body.data123)
+exports.postGetChannel2 = async (req, res, next) => {
     const data = req.body.link_channel;
     const lines = data.split(/\n/)
+
+
+    const doc = new GoogleSpreadsheet('1TQkT-2PlDtNnTdrKnJg-Y2M4yXLL_9j-Ogalk3_nrxE');
+    await doc.useServiceAccountAuth(key);
+    await doc.loadInfo(); // loads document properties and worksheets
+    console.log(doc.title);
+    await doc.updateProperties({title: 'Test data'});
+    const sheet = doc.sheetsByIndex[0];
+    await sheet.setHeaderRow(['Link', 'ID', 'Start', ' Chanel Name']);
     // print all lines
     lines.forEach(line => {
         channelId(line)
             .then(async (id) => {
-                fs.appendFileSync('./txt/ok123.txt', '\n' + id, (err) => {
-                    if (err) {
-                        console.log("err write file")
+                // fs.appendFileSync('./txt/ok123.txt', '\n' +line +" | "+ id, (err) => {
+                //     if (err) {
+                //         console.log("err write file")
+                //     }
+                //     console.log("ok")
+                // })
+                // Create an array for putting to Spreadsheet.
+                // const data123 = [{
+                //     line: line, id: id
+                // }]
+                // await sheet.addRows(data123.map(function (value) {
+                //     return [value.line, value.id];
+                // }));
+
+                let payload = {
+                    channelId: id,
+                    channelIdType: 0,
+                }
+
+                ytch.getChannelInfo(payload).then(async (response) => {
+                    if (!response.alertMessage) {
+                        const data123 = [{
+                            line: line, id: id, start: response.subscriberCount, name: response.author
+                        }]
+                        await sheet.addRows(data123.map(function (value) {
+                            return [value.line, value.id, value.start, value.name];
+                        }));
+                    } else {
+                        const data1 = [{
+                            line: line, id: "Error"
+                        }]
+                        await sheet.addRows(data1.map(function (value) {
+                            return [value.line, value.id];
+                        }));
                     }
-                    console.log("ok")
+                }).catch(async (err) => {
+                    const data1 = [{
+                        line: line, id: "Error"
+                    }]
+                    await sheet.addRows(data1.map(function (value) {
+                        return [value.line, value.id];
+                    }));
                 })
+
             })
-            .catch((err) => {
-                fs.appendFileSync('./txt/ok123.txt', '\n' + err, (err) => {
-                    if (err) {
-                        console.log("err write file")
-                    }
-                    console.log("ok")
-                })
+            .catch(async (err) => {
+                // fs.appendFileSync('./txt/ok123.txt', '\n' + err, (err) => {
+                //     if (err) {
+                //         console.log("err write file")
+                //     }
+                //     console.log("ok")
+                // })
+                const data1 = [{
+                    line: line, id: "Error"
+                }]
+                await sheet.addRows(data1.map(function (value) {
+                    return [value.line, value.id];
+                }));
             })
     })
     return res.redirect('/get_id');
-    /////////// doc file
-    // fs.readFile('./txt/ok.txt', 'utf-8', (err, data) => {
-    //     if (err) throw err;
-    //     // console.log(data);
-    //     const lines = data.split(/\n/)
-    //     // print all lines
-    //     lines.forEach(line => {
-    //         channelId(line)
-    //             .then((id) => {
-    //                 console.log(id)
-    //                 fs.appendFileSync('./txt/ok123.txt', '\n' + id, (err) => {
-    //                     if (err) {
-    //                         console.log("err write file")
-    //                     }
-    //                     console.log("ok")
-    //                 })
-    //             })
-    //             .catch((err) => {
-    //                 fs.appendFileSync('./txt/ok123.txt', '\n' + err, (err) => {
-    //                     if (err) {
-    //                         console.log("err write file")
-    //                     }
-    //                     console.log("ok")
-    //                 })
-    //                 // res.render('index', {
-    //                 //     msg: 'Lỗi không lấy được id channel, vui lòng kiểm tra lại link',
-    //                 //     title: "GET ID CHANNEL YOUTUBE"
-    //                 // })
-    //             })
-    //     })
-    //     res.redirect('/')
-    // });
-
-
-    // const url = req.body.url;
-    // const arrayUrl = [
-    //     "https://www.youtube.com/channel/UCMfn-voayc7DspHHaiPUgRg",
-    //     "https://youtube.com/@jannatpawriyavlogs7513"
-    // ];
-    // console.log(arrayUrl)
-    // arrayUrl.forEach(element =>
-    //     channelId(element)
-    //         .then((id) => {
-    //             console.log(id)
-    //             fs.appendFileSync('./txt/ok123.txt', '\n' + id, (err) => {
-    //                 if (err) {
-    //                     console.log("err write file")
-    //                 }
-    //                 console.log("ok")
-    //                 res.redirect("/")
-    //             })
-    //         })
-    //         .catch((err) => {
-    //             res.render('index', {
-    //                 msg: 'Lỗi không lấy được id channel, vui lòng kiểm tra lại link',
-    //                 title: "GET ID CHANNEL YOUTUBE"
-    //             })
-    //         })
-    // );
 }
 
-exports.clearData = (req,res,next) =>{
+exports.clearData = (req, res, next) => {
     fs.writeFile('./txt/ok123.txt', "", (err) => {
         if (err) {
             console.log("err write file")
@@ -151,7 +147,65 @@ exports.clearData = (req,res,next) =>{
         res.redirect('/get_id');
     })
 }
+/////////// doc file
+// fs.readFile('./txt/ok.txt', 'utf-8', (err, data) => {
+//     if (err) throw err;
+//     // console.log(data);
+//     const lines = data.split(/\n/)
+//     // print all lines
+//     lines.forEach(line => {
+//         channelId(line)
+//             .then((id) => {
+//                 console.log(id)
+//                 fs.appendFileSync('./txt/ok123.txt', '\n' + id, (err) => {
+//                     if (err) {
+//                         console.log("err write file")
+//                     }
+//                     console.log("ok")
+//                 })
+//             })
+//             .catch((err) => {
+//                 fs.appendFileSync('./txt/ok123.txt', '\n' + err, (err) => {
+//                     if (err) {
+//                         console.log("err write file")
+//                     }
+//                     console.log("ok")
+//                 })
+//                 // res.render('index', {
+//                 //     msg: 'Lỗi không lấy được id channel, vui lòng kiểm tra lại link',
+//                 //     title: "GET ID CHANNEL YOUTUBE"
+//                 // })
+//             })
+//     })
+//     res.redirect('/')
+// });
 
+
+// const url = req.body.url;
+// const arrayUrl = [
+//     "https://www.youtube.com/channel/UCMfn-voayc7DspHHaiPUgRg",
+//     "https://youtube.com/@jannatpawriyavlogs7513"
+// ];
+// console.log(arrayUrl)
+// arrayUrl.forEach(element =>
+//     channelId(element)
+//         .then((id) => {
+//             console.log(id)
+//             fs.appendFileSync('./txt/ok123.txt', '\n' + id, (err) => {
+//                 if (err) {
+//                     console.log("err write file")
+//                 }
+//                 console.log("ok")
+//                 res.redirect("/")
+//             })
+//         })
+//         .catch((err) => {
+//             res.render('index', {
+//                 msg: 'Lỗi không lấy được id channel, vui lòng kiểm tra lại link',
+//                 title: "GET ID CHANNEL YOUTUBE"
+//             })
+//         })
+// );
 //cach 2
 // const payload = {
 //     channelId: url,
