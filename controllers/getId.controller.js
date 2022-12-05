@@ -1,9 +1,5 @@
 const {channelId} = require("@gonetone/get-youtube-id-by-url");
 const ytch = require('yt-channel-info');
-const https = require("https");
-let path = require("path");
-const url = require('url');
-var request = require('request');
 const fs = require('fs');
 
 const {GoogleSpreadsheet} = require('google-spreadsheet');
@@ -63,79 +59,67 @@ exports.postGetChannel2 = async (req, res, next) => {
     const data = req.body.link_channel;
     const lines = data.split(/\n/)
 
-
     const doc = new GoogleSpreadsheet('1TQkT-2PlDtNnTdrKnJg-Y2M4yXLL_9j-Ogalk3_nrxE');
     await doc.useServiceAccountAuth(key);
     await doc.loadInfo(); // loads document properties and worksheets
-    console.log(doc.title);
-    await doc.updateProperties({title: 'Test data'});
     const sheet = doc.sheetsByIndex[0];
     await sheet.setHeaderRow(['Link', 'ID', 'Start', ' Chanel Name']);
     // print all lines
-    lines.forEach(line => {
-        channelId(line)
-            .then(async (id) => {
-                // fs.appendFileSync('./txt/ok123.txt', '\n' +line +" | "+ id, (err) => {
-                //     if (err) {
-                //         console.log("err write file")
-                //     }
-                //     console.log("ok")
-                // })
-                // Create an array for putting to Spreadsheet.
-                // const data123 = [{
-                //     line: line, id: id
-                // }]
-                // await sheet.addRows(data123.map(function (value) {
-                //     return [value.line, value.id];
-                // }));
+    return new Promise((resolve, reject) => {
+        lines.forEach((line, index) => {
+            setTimeout(() => {
+                channelId(line)
+                    .then(async (id) => {
+                        /////////add link voi id
+                        // const data123 = [{
+                        //     line: line, id: id
+                        // }]
+                        // await sheet.addRows(data123.map(function (value) {
+                        //     return [value.line, value.id];
+                        // }));
+                        ////////////////////////////////////
+                        let payload = {
+                            channelId: id,
+                            channelIdType: 0,
+                        }
 
-                let payload = {
-                    channelId: id,
-                    channelIdType: 0,
-                }
-
-                ytch.getChannelInfo(payload).then(async (response) => {
-                    if (!response.alertMessage) {
-                        const data123 = [{
-                            line: line, id: id, start: response.subscriberCount, name: response.author
-                        }]
-                        await sheet.addRows(data123.map(function (value) {
-                            return [value.line, value.id, value.start, value.name];
-                        }));
-                    } else {
+                        ytch.getChannelInfo(payload).then(async (response) => {
+                            if (!response.alertMessage) {
+                                const data123 = [{
+                                    line: line, id: id, start: response.subscriberCount, name: response.author
+                                }]
+                                await sheet.addRows(data123.map(function (value) {
+                                    return [value.line, value.id, value.start, value.name];
+                                }));
+                            } else {
+                                const data1 = [{
+                                    line: line, id: "Error"
+                                }]
+                                await sheet.addRows(data1.map(function (value) {
+                                    return [value.line, value.id];
+                                }));
+                            }
+                        }).catch(async (err) => {
+                            const data1 = [{
+                                line: line, id: "Error"
+                            }]
+                            await sheet.addRows(data1.map(function (value) {
+                                return [value.line, value.id];
+                            }));
+                        })
+                    })
+                    .catch(async (err) => {
                         const data1 = [{
                             line: line, id: "Error"
                         }]
                         await sheet.addRows(data1.map(function (value) {
                             return [value.line, value.id];
                         }));
-                    }
-                }).catch(async (err) => {
-                    const data1 = [{
-                        line: line, id: "Error"
-                    }]
-                    await sheet.addRows(data1.map(function (value) {
-                        return [value.line, value.id];
-                    }));
-                })
-
-            })
-            .catch(async (err) => {
-                // fs.appendFileSync('./txt/ok123.txt', '\n' + err, (err) => {
-                //     if (err) {
-                //         console.log("err write file")
-                //     }
-                //     console.log("ok")
-                // })
-                const data1 = [{
-                    line: line, id: "Error"
-                }]
-                await sheet.addRows(data1.map(function (value) {
-                    return [value.line, value.id];
-                }));
-            })
-    })
-    return res.redirect('/get_id');
+                    });
+            }, index * 1000);
+        });
+        res.redirect("/get_id")
+    });
 }
 
 exports.clearData = (req, res, next) => {
@@ -223,3 +207,67 @@ exports.clearData = (req, res, next) => {
 //     console.log(err)
 //     res.send("Loi")
 // })
+
+
+//
+//
+// channelId(line)
+//     .then(async (id) => {
+//         // fs.appendFileSync('./txt/ok123.txt', '\n' +line +" | "+ id, (err) => {
+//         //     if (err) {
+//         //         console.log("err write file")
+//         //     }
+//         //     console.log("ok")
+//         // })
+//         // Create an array for putting to Spreadsheet.
+//         const data123 = [{
+//             line: line, id: id
+//         }]
+//         await sheet.addRows(data123.map(function (value) {
+//             return [value.line, value.id];
+//         }));
+//
+//         // let payload = {
+//         //     channelId: id,
+//         //     channelIdType: 0,
+//         // }
+//         //
+//         // ytch.getChannelInfo(payload).then(async (response) => {
+//         //     if (!response.alertMessage) {
+//         //         const data123 = [{
+//         //             line: line, id: id, start: response.subscriberCount, name: response.author
+//         //         }]
+//         //         await sheet.addRows(data123.map(function (value) {
+//         //             return [value.line, value.id, value.start, value.name];
+//         //         }));
+//         //     } else {
+//         //         const data1 = [{
+//         //             line: line, id: "Error"
+//         //         }]
+//         //         await sheet.addRows(data1.map(function (value) {
+//         //             return [value.line, value.id];
+//         //         }));
+//         //     }
+//         // }).catch(async (err) => {
+//         //     const data1 = [{
+//         //         line: line, id: "Error"
+//         //     }]
+//         //     await sheet.addRows(data1.map(function (value) {
+//         //         return [value.line, value.id];
+//         //     }));
+//         // })
+//     })
+//     .catch(async (err) => {
+//         // fs.appendFileSync('./txt/ok123.txt', '\n' + err, (err) => {
+//         //     if (err) {
+//         //         console.log("err write file")
+//         //     }
+//         //     console.log("ok")
+//         // })
+//         const data1 = [{
+//             line: line, id: "Error"
+//         }]
+//         await sheet.addRows(data1.map(function (value) {
+//             return [value.line, value.id];
+//         }));
+//     })
