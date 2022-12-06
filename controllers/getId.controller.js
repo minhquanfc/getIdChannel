@@ -4,6 +4,7 @@ const fs = require('fs');
 
 const {GoogleSpreadsheet} = require('google-spreadsheet');
 const key = require('../key.json');
+const e = require("express");
 
 exports.getFormGetID = (req, res, next) => {
     res.render('index', {title: 'GET ID CHANNEL YOUTUBE'})
@@ -65,60 +66,63 @@ exports.postGetChannel2 = async (req, res, next) => {
     const sheet = doc.sheetsByIndex[0];
     await sheet.setHeaderRow(['Link', 'ID', 'Start', ' Chanel Name']);
     // print all lines
-    return new Promise((resolve, reject) => {
-        lines.forEach((line, index) => {
-            setTimeout(() => {
-                channelId(line)
-                    .then(async (id) => {
-                        /////////add link voi id
-                        // const data123 = [{
-                        //     line: line, id: id
-                        // }]
-                        // await sheet.addRows(data123.map(function (value) {
-                        //     return [value.line, value.id];
-                        // }));
-                        ////////////////////////////////////
-                        let payload = {
-                            channelId: id,
-                            channelIdType: 0,
-                        }
+    let array = [];
+    lines.forEach((line, index) => {
+        setTimeout(() => {
+            channelId(line)
+                .then(async (id) => {
+                    /////////add link voi id
+                    // const data123 = [{
+                    //     line: line, id: id
+                    // }]
+                    // await sheet.addRows(data123.map(function (value) {
+                    //     return [value.line, value.id];
+                    // }));
+                    ////////////////////////////////////
+                    let payload = {
+                        channelId: id,
+                        channelIdType: 0,
+                    }
 
-                        ytch.getChannelInfo(payload).then(async (response) => {
-                            if (!response.alertMessage) {
-                                const data123 = [{
-                                    line: line, id: id, start: response.subscriberCount, name: response.author
-                                }]
-                                await sheet.addRows(data123.map(function (value) {
-                                    return [value.line, value.id, value.start, value.name];
-                                }));
-                            } else {
-                                const data1 = [{
-                                    line: line, id: "Error"
-                                }]
-                                await sheet.addRows(data1.map(function (value) {
-                                    return [value.line, value.id];
-                                }));
-                            }
-                        }).catch(async (err) => {
+                    ytch.getChannelInfo(payload).then(async (response) => {
+                        if (!response.alertMessage) {
+                            const data123 = [{
+                                line: line, id: id, start: response.subscriberCount, name: response.author
+                            }]
+                            await sheet.addRows(data123.map(function (value) {
+                                return [value.line, value.id, value.start, value.name];
+                            }));
+                        } else {
                             const data1 = [{
                                 line: line, id: "Error"
                             }]
                             await sheet.addRows(data1.map(function (value) {
                                 return [value.line, value.id];
                             }));
-                        })
-                    })
-                    .catch(async (err) => {
+                        }
+                    }).catch(async (err) => {
                         const data1 = [{
                             line: line, id: "Error"
                         }]
                         await sheet.addRows(data1.map(function (value) {
                             return [value.line, value.id];
                         }));
-                    });
-            }, index * 1000);
-        });
-        res.redirect("/get_id")
+                    })
+
+                    array.push(id[0].toUpperCase() + id.slice(1));
+                    if (index === lines.length - 1) {
+                        res.render("getData",{array:array})
+                    }
+                })
+                .catch(async (err) => {
+                    const data1 = [{
+                        line: line, id: "Error"
+                    }]
+                    await sheet.addRows(data1.map(function (value) {
+                        return [value.line, value.id];
+                    }));
+                });
+        }, index * 1000);
     });
 }
 
