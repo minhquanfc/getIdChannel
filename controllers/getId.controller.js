@@ -68,6 +68,7 @@ exports.postGetChannel2 = async (req, res, next) => {
     // print all lines
     let array = [];
     lines.forEach((line, index) => {
+        let id123;
         setTimeout(() => {
             channelId(line)
                 .then(async (id) => {
@@ -109,19 +110,23 @@ exports.postGetChannel2 = async (req, res, next) => {
                         }));
                     })
 
-                    array.push(id[0].toUpperCase() + id.slice(1));
+                    array.push("\n" + id[0].toUpperCase() + id.slice(1));
                     if (index === lines.length - 1) {
-                        res.render("getData",{array:array})
+                        res.render("getData", {array: [array.join(' ')]})
                     }
                 })
-                .catch(async (err) => {
-                    const data1 = [{
-                        line: line, id: "Error"
-                    }]
-                    await sheet.addRows(data1.map(function (value) {
-                        return [value.line, value.id];
-                    }));
-                });
+            .catch(async (err) => {
+                array.push("\n"+ "Error");
+                if (index === lines.length - 1) {
+                    res.render("getData", {array: [array.join(' ')]})
+                }
+                const data1 = [{
+                    line: line, id: "Error"
+                }]
+                await sheet.addRows(data1.map(function (value) {
+                    return [value.line, value.id];
+                }));
+            });
         }, index * 1000);
     });
 }
