@@ -7,7 +7,9 @@
   },
   "dependencies": {
     "@gonetone/get-youtube-id-by-url": "^1.0.0",
+    "axios": "^1.4.0",
     "bootstrap": "^5.2.2",
+    "cheerio": "^1.0.0-rc.12",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "douyinvideodownload": "^1.0.1",
@@ -19,6 +21,7 @@
     "morgan": "~1.9.1",
     "nodejs-file-downloader": "^4.10.2",
     "request": "^2.88.2",
+    "tiktok-scraper": "^1.4.36",
     "valid-url": "^1.0.9",
     "yt-channel-info": "^3.2.1"
   }
