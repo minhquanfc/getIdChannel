@@ -24,7 +24,6 @@ const axiosInstance = axios.create({
     },
 })
 const checkUrl = (url) => url.indexOf('youtube.com') !== -1 || url.indexOf('youtu.be') !== -1
-
 const channelId = async (url) => {
     const videoRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=)?([a-zA-Z0-9_-]{11})/;
     if (checkUrl(url)) {
